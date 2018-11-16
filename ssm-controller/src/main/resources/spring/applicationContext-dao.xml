@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context
+        http://www.springframework.org/schema/context/spring-context.xsd">
+	
+	<!-- 加载db的properties文件 -->
+	<context:property-placeholder location="classpath:resource/db.properties"/>
+	
+<!-- dataSource SqlSessionFactoryBean MapperScannerConfigurer -->
+	<!-- 数据源 -->
+	<bean id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource">
+		<property name="driverClass" value="${jdbc.driver}"></property>
+		<property name="jdbcUrl" value="${jdbc.url}"></property>
+		<property name="user" value="${jdbc.user}"></property>
+		<property name="password" value="${jdbc.password}"></property>
+		
+		<property name="maxPoolSize" value="${c3p0.minPoolSize}"></property>
+		<property name="minPoolSize" value="${c3p0.maxPoolSize}"></property>
+		<property name="initialPoolSize" value="${c3p0.initialPoolSize}"></property>
+	</bean>
+	
+	<bean id="sqlSessionFactoryBean" class="org.mybatis.spring.SqlSessionFactoryBean">
+		<!-- 指定mybatis的配置文件 -->
+		<property name="configLocation" value="classpath:mybatis/mybatisConfig.xml"></property>
+		<!-- 指定数据源 -->
+		<property name="dataSource" ref="dataSource"></property>
+	</bean>
+	
+	<!--  -->
+	<bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+		<!-- 
+			Specifies which {@code SqlSessionFactory} to use in the case that there is
+		   * more than one in the spring context. Usually this is only needed when you
+		   * have more than one datasource.
+		   如果有多个数据源，则需要配置此属性的值，否则不需要
+		 -->
+<!-- 		<property name="sqlSessionFactoryBeanName" value=""></property> -->
+		<property name="basePackage" value="com.shi.mvn.ssm.mapper"></property>
+	</bean>
+	
+</beans>
